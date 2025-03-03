@@ -1,0 +1,28 @@
+[
+  {
+    "ContainingType": "Wordle.Controllers.WordieController",
+    "Method": "Guess",
+    "RelativePath": "api/Wordie/guess",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "letter",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Wordle.Controllers.WordieController",
+    "Method": "Game",
+    "RelativePath": "api/Wordie/Start",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

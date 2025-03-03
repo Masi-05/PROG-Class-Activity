@@ -1,4 +1,4 @@
-namespace ConsoleWordle
+namespace Wordle
 {
     public class WeatherForecast
     {
