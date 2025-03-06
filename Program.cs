@@ -1,39 +1,16 @@
+﻿using System;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-using ConsoleWordle.data;
-using Microsoft.EntityFrameworkCore;
-using ConsoleWordle.Model;
-
-namespace ConsoleWordle
+namespace RunWordle
 {
     public class Program
     {
-        public static void Main(string[] args)
+        static async Task Main()
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-
-            builder.Services.AddOpenApi();
-
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
+            await new Run().PlayGameAsync();
         }
     }
 }

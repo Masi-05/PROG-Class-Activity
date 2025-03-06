@@ -1,0 +1,14 @@
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\bin\Debug\net9.0\RunWordle.exe
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\bin\Debug\net9.0\RunWordle.deps.json
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\bin\Debug\net9.0\RunWordle.runtimeconfig.json
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\bin\Debug\net9.0\RunWordle.dll
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\bin\Debug\net9.0\RunWordle.pdb
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.AssemblyInfoInputs.cache
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.AssemblyInfo.cs
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.csproj.CoreCompileInputs.cache
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.dll
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\refint\RunWordle.dll
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.pdb
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\RunWordle.genruntimeconfig.cache
+C:\Users\lab_services_student\source\repos\RunWordle\RunWordle\obj\Debug\net9.0\ref\RunWordle.dll
