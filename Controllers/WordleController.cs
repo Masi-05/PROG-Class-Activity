@@ -1,61 +1,56 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ConsoleWordle.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class WordleController : Controller
+    [Route("api/wordle")]
+    public class WordleController : ControllerBase
     {
-        private readonly HttpClient _client;
+        private readonly App _app;
+        private static readonly Dictionary<string, int> UserAttempts = new(); 
 
-        public WordleController(HttpClient client)
+        public WordleController(App app)
         {
-            _client = client;
+            _app = app;
         }
 
-        // GET: Word
-        public async Task<ActionResult> Index()
+        [HttpGet("new-user")]
+        public IActionResult GenerateUserId()
         {
-            string apiUrl = "http://localhost:58764/api/words"; 
+            string userId = Guid.NewGuid().ToString();
+            UserAttempts[userId] = 0; 
+            return Ok(new { userId });
+        }
 
-            try
-            {
-                var response = await _client.GetAsync(apiUrl);
+        [HttpGet("word")]
+        public IActionResult GetWord()
+        {
+            var hiddenWord = _app.GetWord();
+            var length = _app.GetWordLength();
+            return Ok(new { word = hiddenWord, wordLength =length , attemptsLeft = 5 });
+        }
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var json = await response.Content.ReadAsStringAsync();
-                    var words = JsonConvert.DeserializeObject<List<string>>(json); 
+        [HttpPost("guess/{userId}")]
+        public IActionResult SubmitGuess(string userId, [FromBody] string guess)
+        {
+            var attemptsLeft = _app.SubmitGuess(userId, guess, out string feedback);
 
-                    if (words != null && words.Count > 0)
-                    {
-                        Random random = new Random();
-                        var randomWord = words[random.Next(words.Count)];
+            if (attemptsLeft == -1)
+                return BadRequest(new { message = "Game over! No attempts left." });
 
-                        
-                        ViewData["RandomWord"] = randomWord;
-                    }
-                    else
-                    {
-                        ViewData["ErrorMessage"] = "No words found from API.";
-                    }
-                }
-                else
-                {
-                    ViewData["ErrorMessage"] = "Failed to retrieve words from API.";
-                }
-            }
-            catch (Exception ex)
-            {
-                ViewData["ErrorMessage"] = $"Error: {ex.Message}";
-            }
+            if (attemptsLeft == -2)
+                return BadRequest(new { message = feedback });
 
-            return View();
+            return Ok(new { message = "Guess recorded.", feedback, attemptsLeft });
+        }
+
+        [HttpGet("attempts/{userId}")]
+        public IActionResult GetAttemptsLeft(string userId)
+        {
+            int attemptsLeft = _app.GetAttemptsLeft(userId);
+            return Ok(new { attemptsLeft });
         }
     }
 }

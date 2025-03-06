@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "0wHh3gUGalI0SHpL8b5SoanepPv8mDSqiLCAGyka3g0=",
+  "Source": "ConsoleWordle",
+  "BasePath": "_content/ConsoleWordle",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
