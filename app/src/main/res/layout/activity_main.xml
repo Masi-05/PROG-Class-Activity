@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#141414"
+    android:background="#383737"
     tools:context=".MainActivity">
 
     <!--on below line creating a text view for heading-->
@@ -16,7 +15,7 @@
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Wordle!!"
+        android:text="WORDLE"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="32sp"

@@ -8,400 +8,121 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import vcmsa.projects.wordleapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    // on below line creating a
-    // variable for activity binding.
     private lateinit var binding: ActivityMainBinding
-
-    // on below line creating a variable
-    // for word which user has to guess.
-    private val WORD = "dubai"
-
+    private var wordToGuess: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // on below line calling method to
-        // pass focus to next edit text.
+
+        fetchWordFromAPI()
+
         keepPassingFocus()
+        setupTextWatchers()
+    }
 
-        // on below line adding text change listener
-        // for last edit texts of each row
-        binding.edt15.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    private fun fetchWordFromAPI() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://wordle20250313105430.azurewebsites.net/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-            }
+        val apiService = retrofit.create(WordleApi::class.java)
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    // on below line calling validate row to
-                    // check the word entered in that row.
-                    validateRow(
-                        binding.edt11,
-                        binding.edt12,
-                        binding.edt13,
-                        binding.edt14,
-                        binding.edt15
-                    )
+        apiService.getWord().enqueue(object : Callback<WordResponse> {
+            override fun onResponse(call: Call<WordResponse>, response: Response<WordResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    wordToGuess = response.body()!!.word.uppercase()
+                } else {
+                    Toast.makeText(applicationContext, "Failed to fetch word", Toast.LENGTH_SHORT).show()
                 }
             }
 
-        })
-        binding.edt25.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            override fun onFailure(call: Call<WordResponse>, t: Throwable) {
+                Toast.makeText(applicationContext, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    // on below line calling validate row to
-                    // check the word entered in that row.
-                    validateRow(
-                        binding.edt21,
-                        binding.edt22,
-                        binding.edt23,
-                        binding.edt24,
-                        binding.edt25
-                    )
-                }
-            }
-
-        })
-        binding.edt35.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    // on below line calling validate row to
-                    // check the word entered in that row.
-                    validateRow(
-                        binding.edt31,
-                        binding.edt32,
-                        binding.edt33,
-                        binding.edt34,
-                        binding.edt35
-                    )
-                }
-            }
-
-        })
-        binding.edt45.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    // on below line calling validate row to
-                    // check the word entered in that row.
-                    validateRow(
-                        binding.edt41,
-                        binding.edt42,
-                        binding.edt43,
-                        binding.edt44,
-                        binding.edt45
-                    )
-                }
-            }
-
-        })
-        binding.edt55.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    // on below line calling validate row to
-                    // check the word entered in that row.
-                    validateRow(
-                        binding.edt51,
-                        binding.edt52,
-                        binding.edt53,
-                        binding.edt54,
-                        binding.edt55
-                    )
-                }
-            }
-
-        })
-        binding.edt65.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    // on below line calling validate row to
-                    // check the word entered in that row.
-                    validateRow(
-                        binding.edt61,
-                        binding.edt62,
-                        binding.edt63,
-                        binding.edt64,
-                        binding.edt65
-                    )
-                }
-            }
-
         })
     }
 
+    private fun setupTextWatchers() {
+        val lastEdits = listOf(
+            binding.edt15, binding.edt25, binding.edt35, binding.edt45, binding.edt55, binding.edt65
+        )
 
-    private fun makeGameInactive() {
-        // on below line disabling all
-        // edit text to make game inactive.
-        binding.edt11.isEnabled = false
-        binding.edt12.isEnabled = false
-        binding.edt13.isEnabled = false
-        binding.edt14.isEnabled = false
-        binding.edt15.isEnabled = false
-        binding.edt21.isEnabled = false
-        binding.edt22.isEnabled = false
-        binding.edt23.isEnabled = false
-        binding.edt24.isEnabled = false
-        binding.edt25.isEnabled = false
-        binding.edt31.isEnabled = false
-        binding.edt32.isEnabled = false
-        binding.edt33.isEnabled = false
-        binding.edt34.isEnabled = false
-        binding.edt35.isEnabled = false
-        binding.edt41.isEnabled = false
-        binding.edt42.isEnabled = false
-        binding.edt43.isEnabled = false
-        binding.edt44.isEnabled = false
-        binding.edt45.isEnabled = false
-        binding.edt51.isEnabled = false
-        binding.edt52.isEnabled = false
-        binding.edt53.isEnabled = false
-        binding.edt54.isEnabled = false
-        binding.edt61.isEnabled = false
-        binding.edt62.isEnabled = false
-        binding.edt63.isEnabled = false
-        binding.edt64.isEnabled = false
-        binding.edt65.isEnabled = false
+        lastEdits.forEach { editText ->
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    if (s?.length == 1) {
+                        validateRow()
+                    }
+                }
+            })
+        }
     }
 
-    private fun validateRow(
-        edt1: EditText,
-        edt2: EditText,
-        edt3: EditText,
-        edt4: EditText,
-        edt5: EditText
-    ) {
-        // on below line creating variables
-        // to get text from edit texts.
-        val edt1Txt = edt1.text.toString()
-        val edt2Txt = edt2.text.toString()
-        val edt3Txt = edt3.text.toString()
-        val edt4Txt = edt4.text.toString()
-        val edt5Txt = edt5.text.toString()
-
-        // on below line creating variables
-        // to get each char from word.
-        val w1 = WORD[0].toString()
-        val w2 = WORD[1].toString()
-        val w3 = WORD[2].toString()
-        val w4 = WORD[3].toString()
-        val w5 = WORD[4].toString()
-
-        // on below line comparing if text entered in edt is equal to other words.
-        if (edt1Txt == w2 || edt1Txt == w3 || edt1Txt == w4 || edt1Txt == w5) {
-            // on below line changing background color of that edt.
-            edt1.setBackgroundColor(Color.parseColor("#ffff00"))
-        }
-        // on below line comparing if text entered in edt is equal to other words.
-        if (edt2Txt == w1 || edt2Txt == w3 || edt2Txt == w4 || edt2Txt == w5) {
-            // on below line changing background color of that edt.
-            edt2.setBackgroundColor(Color.parseColor("#ffff00"))
-        }
-        // on below line comparing if text entered in edt is equal to other words.
-        if (edt3Txt == w1 || edt3Txt == w2 || edt3Txt == w4 || edt3Txt == w5) {
-            // on below line changing background color of that edt.
-            edt3.setBackgroundColor(Color.parseColor("#ffff00"))
-        }
-        // on below line comparing if text entered in edt is equal to other words.
-        if (edt4Txt == w1 || edt4Txt == w2 || edt4Txt == w3 || edt4Txt == w5) {
-            // on below line changing background color of that edt.
-            edt4.setBackgroundColor(Color.parseColor("#ffff00"))
-        }
-        // on below line comparing if text entered in edt is equal to other words.
-        if (edt5Txt == w1 || edt5Txt == w2 || edt5Txt == w3 || edt5Txt == w4) {
-            // on below line changing background color of that edt.
-            edt5.setBackgroundColor(Color.parseColor("#ffff00"))
-        }
-
-        // on below line checking if word is equal to text in edt
-        if (edt1Txt == w1) {
-            // on below line changing background color of that edt.
-            edt1.setBackgroundColor(Color.parseColor("#33cc33"))
-        }
-        // on below line checking if word is equal to text in edt
-        if (edt2Txt == w2) {
-            // on below line changing background color of that edt.
-            edt2.setBackgroundColor(Color.parseColor("#33cc33"))
-        }
-        // on below line checking if word is equal to text in edt
-        if (edt3Txt == w3) {
-            // on below line changing background color of that edt.
-            edt3.setBackgroundColor(Color.parseColor("#33cc33"))
-        }
-        // on below line checking if word is equal to text in edt
-        if (edt4Txt == w4) {
-            // on below line changing background color of that edt.
-            edt4.setBackgroundColor(Color.parseColor("#33cc33"))
-        }
-        // on below line checking if word is equal to text in edt
-        if (edt5Txt == w5) {
-            // on below line changing background color of that edt.
-            edt5.setBackgroundColor(Color.parseColor("#33cc33"))
-        }
-
-        // on below line checking if entered by users is present
-        // in the word which user has to find.
-        if (edt1Txt != w1 && edt1Txt != w2 && edt1Txt != w3 && edt1Txt != w4 && edt1Txt != w5) {
-            // on below line changing background color of that edt.
-            edt1.setBackgroundColor(Color.parseColor("#ff3333"))
-        }
-
-        if (edt2Txt != w1 && edt2Txt != w2 && edt2Txt != w3 && edt2Txt != w4 && edt2Txt != w5) {
-            // on below line changing background color of that edt.
-            edt2.setBackgroundColor(Color.parseColor("#ff3333"))
-        }
-
-        if (edt3Txt != w1 && edt3Txt != w2 && edt3Txt != w3 && edt3Txt != w4 && edt3Txt != w5) {
-            // on below line changing background color of that edt.
-            edt3.setBackgroundColor(Color.parseColor("#ff3333"))
-        }
-
-        if (edt4Txt != w1 && edt4Txt != w2 && edt4Txt != w3 && edt4Txt != w4 && edt4Txt != w5) {
-            // on below line changing background color of that edt.
-            edt4.setBackgroundColor(Color.parseColor("#ff3333"))
-        }
-
-        if (edt5Txt != w1 && edt5Txt != w2 && edt5Txt != w3 && edt5Txt != w4 && edt5Txt != w5) {
-            // on below line changing background color of that edt.
-            edt5.setBackgroundColor(Color.parseColor("#ff3333"))
-        }
-
-        // below method is called if user is able to guess the word.
-        if (edt1Txt == w1 && edt2Txt == w2 && edt3Txt == w3 && edt4Txt == w4 && edt5Txt == w5) {
-            // on below line setting text and changing the visibility of text.
-            binding.idTVCongo.text = "Congratulations, you have guessed the right word."
-            binding.idTVCongo.visibility = View.VISIBLE
-            // on below line calling below method to make game inactive.
-            makeGameInactive()
-            // on below line displaying toast message.
-            Toast.makeText(
-                applicationContext,
-                "Congratulations, you have guessed the right word..",
-                Toast.LENGTH_SHORT
-            ).show()
+    private fun validateRow() {
+        if (wordToGuess.isEmpty()) {
+            Toast.makeText(applicationContext, "Word not loaded yet!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // below method is called if user is not able to guess the word.
-        if (edt5.id == R.id.edt_65) {
-            // on below line setting text if user is not able to guess
-            // the word and changing its visibility
-            binding.idTVCongo.text = "Sorry you couldn't guess the word."
-            binding.idTVCongo.visibility = View.VISIBLE
-            // on below line calling
-            // inactive to make game inactive.
-            makeGameInactive()
-            // on below line displaying toast message
-            Toast.makeText(
-                applicationContext,
-                "Sorry you couldn't guess the word.",
-                Toast.LENGTH_SHORT
-            ).show()
+        val editTexts = listOf(
+            binding.edt11, binding.edt12, binding.edt13, binding.edt14, binding.edt15
+        )
 
+        val userGuess = editTexts.joinToString("") { it.text.toString().uppercase() }
+
+        editTexts.forEachIndexed { index, editText ->
+            when {
+                userGuess[index] == wordToGuess[index] -> editText.setBackgroundColor(Color.GREEN)
+                wordToGuess.contains(userGuess[index]) -> editText.setBackgroundColor(Color.YELLOW)
+                else -> editText.setBackgroundColor(Color.RED)
+            }
+        }
+
+        if (userGuess == wordToGuess) {
+            binding.idTVCongo.text = "Congratulations! You guessed the word!"
+            binding.idTVCongo.visibility = View.VISIBLE
+            makeGameInactive()
         }
     }
 
-    private fun keepPassingFocus() {
-        // on below line calling method pass focus to next
-        // to pass focus to next edt for row 1.
-        passFocusToNextEdt(binding.edt11, binding.edt12)
-        passFocusToNextEdt(binding.edt12, binding.edt13)
-        passFocusToNextEdt(binding.edt13, binding.edt14)
-        passFocusToNextEdt(binding.edt14, binding.edt15)
-
-        // on below line calling method pass focus to next
-        // to pass focus to next edt for row 2.
-        passFocusToNextEdt(binding.edt21, binding.edt22)
-        passFocusToNextEdt(binding.edt22, binding.edt23)
-        passFocusToNextEdt(binding.edt23, binding.edt24)
-        passFocusToNextEdt(binding.edt24, binding.edt25)
-
-        // on below line calling method pass focus to next
-        // to pass focus to next edt for row 3.
-        passFocusToNextEdt(binding.edt31, binding.edt32)
-        passFocusToNextEdt(binding.edt32, binding.edt33)
-        passFocusToNextEdt(binding.edt33, binding.edt34)
-        passFocusToNextEdt(binding.edt34, binding.edt35)
-
-        // on below line calling method pass focus to next
-        // to pass focus to next edt for row 4.
-        passFocusToNextEdt(binding.edt41, binding.edt42)
-        passFocusToNextEdt(binding.edt42, binding.edt43)
-        passFocusToNextEdt(binding.edt43, binding.edt44)
-        passFocusToNextEdt(binding.edt44, binding.edt45)
-
-        // on below line calling method pass focus to next
-        // to pass focus to next edt for row 5.
-        passFocusToNextEdt(binding.edt51, binding.edt52)
-        passFocusToNextEdt(binding.edt52, binding.edt53)
-        passFocusToNextEdt(binding.edt53, binding.edt54)
-        passFocusToNextEdt(binding.edt54, binding.edt55)
-
-        // on below line calling method pass focus to next
-        // to pass focus to next edt for row 6.
-        passFocusToNextEdt(binding.edt61, binding.edt62)
-        passFocusToNextEdt(binding.edt62, binding.edt63)
-        passFocusToNextEdt(binding.edt63, binding.edt64)
-        passFocusToNextEdt(binding.edt64, binding.edt65)
+    private fun makeGameInactive() {
+        listOf(
+            binding.edt11, binding.edt12, binding.edt13, binding.edt14, binding.edt15,
+            binding.edt21, binding.edt22, binding.edt23, binding.edt24, binding.edt25,
+            binding.edt31, binding.edt32, binding.edt33, binding.edt34, binding.edt35,
+            binding.edt41, binding.edt42, binding.edt43, binding.edt44, binding.edt45,
+            binding.edt51, binding.edt52, binding.edt53, binding.edt54, binding.edt55,
+            binding.edt61, binding.edt62, binding.edt63, binding.edt64, binding.edt65
+        ).forEach { it.isEnabled = false }
     }
 
-    private fun passFocusToNextEdt(edt1: EditText, edt2: EditText) {
-        // on below line we are passing focus to
-        // next edt is previous one is filled.
-        edt1.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    private fun keepPassingFocus() {
+        listOf(
+            binding.edt11 to binding.edt12, binding.edt12 to binding.edt13, binding.edt13 to binding.edt14, binding.edt14 to binding.edt15,
+            binding.edt21 to binding.edt22, binding.edt22 to binding.edt23, binding.edt23 to binding.edt24, binding.edt24 to binding.edt25,
+            binding.edt31 to binding.edt32, binding.edt32 to binding.edt33, binding.edt33 to binding.edt34, binding.edt34 to binding.edt35,
+            binding.edt41 to binding.edt42, binding.edt42 to binding.edt43, binding.edt43 to binding.edt44, binding.edt44 to binding.edt45,
+            binding.edt51 to binding.edt52, binding.edt52 to binding.edt53, binding.edt53 to binding.edt54, binding.edt54 to binding.edt55,
+            binding.edt61 to binding.edt62, binding.edt62 to binding.edt63, binding.edt63 to binding.edt64, binding.edt64 to binding.edt65
+        ).forEach { (current, next) ->
+            current.setOnKeyListener { _, _, _ ->
+                if (current.text.length == 1) next.requestFocus()
+                false
             }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    edt2.requestFocus()
-                }
-            }
-
-        })
+        }
     }
 }
