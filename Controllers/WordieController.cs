@@ -4,7 +4,7 @@ namespace Wordle.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WordieController : Controller
+    public class WordieController : ControllerBase
     {
         private readonly Game _game;
 
@@ -13,14 +13,15 @@ namespace Wordle.Controllers
             _game = game;
         }
 
-        [HttpPost("Start")]
-        public IActionResult Game()
+        [HttpPost("start")]
+        public IActionResult StartGame()
         {
             _game.StartNew();
-            return Ok(new { message = "Start a new game" });
+            return Ok(new { message = "Game started", wordLength = _game.GetWord().Length });
         }
+
         [HttpPost("guess")]
-        public IActionResult Guess([FromBody] string letter) 
+        public IActionResult Guess([FromBody] string letter)
         {
             if (string.IsNullOrEmpty(letter) || letter.Length != 1)
             {
@@ -33,6 +34,13 @@ namespace Wordle.Controllers
                 return Ok(new { message = "Game Over", maskedWord = result.maskedWord, attemptsLeft = result.attemptsLeft });
 
             return Ok(new { maskedWord = result.maskedWord, attemptsLeft = result.attemptsLeft });
+        }
+
+        // New endpoint to retrieve the current word
+        [HttpGet("word")]
+        public IActionResult GetWord()
+        {
+            return Ok(new { word = _game.GetWord() });
         }
     }
 }
